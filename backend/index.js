@@ -10,11 +10,12 @@ const PORT = process.env.PORT || 8000;
 const _dirname = path.resolve();
 
 const cors = require('cors');
-app.use(cors({ origin: 'http://localhost:3000' }));
-
+const allowedOrigin = process.env.NODE_ENV === 'production'
+    ? 'https://<FoodApp>.onrender.com' 
+    : 'http://localhost:3000';
+app.use(cors({ origin: allowedOrigin }));
 
  // mongoDb();
-
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
     res.header(
