@@ -11,13 +11,13 @@ const _dirname = path.resolve();
 
 const cors = require('cors');
 const allowedOrigin = process.env.NODE_ENV === 'production'
-    ? 'https://<FoodApp>.onrender.com' 
+    ? 'https://foodapp-4jmt.onrender.com' // Replace `<FoodApp>` with your actual app name
     : 'http://localhost:3000';
 app.use(cors({ origin: allowedOrigin }));
 
  // mongoDb();
 app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.setHeader("Access-Control-Allow-Origin", "https://foodapp-4jmt.onrender.com/");
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
