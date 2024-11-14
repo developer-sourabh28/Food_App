@@ -1,44 +1,44 @@
 const express = require('express');
 require('dotenv').config();
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 const mongoDb = require('./db');
 const path = require('path');
-
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 const _dirname = path.resolve();
 
-const cors = require('cors');
+// Define allowed origin based on environment
 const allowedOrigin = process.env.NODE_ENV === 'production'
-    ? 'https://foodapp-4jmt.onrender.com' // Replace `<FoodApp>` with your actual app name
-    : 'http://localhost:3000';
-app.use(cors({ origin: allowedOrigin }));
+    ? 'http://localhost:8000'  // Replace with your actual production URL
+    : 'http://localhost:3000';  // For local development
 
- // mongoDb();
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "https://foodapp-4jmt.onrender.com/");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );    
-    next();
-})
+// Apply CORS middleware
+app.use(cors({
+    origin: allowedOrigin,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
+// Other middleware
 app.use(express.json());
+
+// API routes
 app.use('/api', require("./Routes/CreateUser"));
 app.use('/api', require("./Routes/DisplayData"));
 app.use('/api', require("./Routes/OrderData"));
-app.use('/api', require("./Routes/menuItemRoutes"));  // if using a separate file
+app.use('/api', require("./Routes/menuItemRoutes"));
 
+// Serve static files in production
 app.use(express.static(path.join(_dirname, "/frontend/build")));
 app.get('*', (_, res) => {
     res.sendFile(path.resolve(_dirname, "frontend", "build", "index.html"));
-})
+});
 
 app.get('/', (req, res) => {
-    return res.send("server is running")
-})
+    return res.send("Server is running");
+});
 
 const startServer = async () => {
     try {
@@ -46,7 +46,7 @@ const startServer = async () => {
         console.log("MongoDB connected");
 
         // Optionally, seed the database with initial data
-        await mongoDb.insertData(); // Ensure this is correctly handled in your db.js file
+        await mongoDb.insertData();
         await mongoDb.insertCatData();
 
         app.listen(PORT, () => {
@@ -58,6 +58,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-
-
